@@ -5,6 +5,7 @@ import cors from 'cors';
 import connectDB from './config/connectDB.js';
 import userRoute from './routes/userRoute.js';
 import { errorHandler } from './middlewares/errorMiddleware.js';
+import cookieParser from 'cookie-parser';
 
 
 dotenv.config();
@@ -14,6 +15,7 @@ const port = process.env.PORT ?? 8000;
 
 // Middleware
 app.use(express.json())
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 app.use(
