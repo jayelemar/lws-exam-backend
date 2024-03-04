@@ -1,6 +1,12 @@
 
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
+import jwt from 'jsonwebtoken'
+
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" })
+};
+
 
 const registerUser = asyncHandler(async ( req, res) => {
     const { name , email, password } = req.body
@@ -22,15 +28,32 @@ const registerUser = asyncHandler(async ( req, res) => {
     }
 
     // Create a new user in DB
-    const newUser = new User({
+    const user = new User({
       name,
       email,
       password
     });
-    await newUser.save()
+    await user.save()
 
     // Encrypt Password before saving to DB
 
+    // Generate Token
+    const token = generateToken(user._id)
+    res.cookie("token", token, {
+      path: "/",
+      httpOnly: true,
+      expires: new Date(Date.now() + 1000*86400),
+      sameSite: "none",
+      secure: true,
+    })
+
+    if(user) {
+      const { _id, name, email } = user
+      res.status(201).json({ _id, name, email, token })
+    } else {
+      res.status(400)
+      throw new Error("Invalid user data")
+    }
 });
 
 export {
