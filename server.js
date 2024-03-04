@@ -3,6 +3,9 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import connectDB from './config/connectDB.js';
+import userRoute from './routes/userRoute.js';
+import { errorHandler } from './middlewares/errorMiddleware.js';
+
 
 dotenv.config();
 const app = express();
@@ -20,13 +23,20 @@ app.use(
         "localhost:3000", //nextjs
         "https://your-frontend-website.com",
       ],
-     credentials: true
+      credentials: true
     })
 );
+
 
 app.get('/', (req, res) => {
   res.send('Hello World, from Express Server!');
 });
+
+// Error Handler
+app.use(errorHandler);
+
+//Routes
+app.use("/api/users", userRoute)
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
