@@ -2,6 +2,7 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs'
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" })
@@ -56,6 +57,53 @@ const registerUser = asyncHandler(async ( req, res) => {
     }
 });
 
+const loginUser = asyncHandler(async ( req, res) => {
+  const { email, password } = req.body
+
+  // Validation
+  if( !email || !password) {
+    res.status(400);
+    throw new Error("Please add email and password")
+  }
+  // check if user exist
+  const user = await User.findOne({ email })
+  if( !user ) {
+    res.status(400)
+    throw new Error("User not found, please sign-up.")
+  }
+  // if user exist, check password
+  const passwordIsCorrect = await bcrypt.compare(password, user.password)
+
+  //Generate Token
+  const token = generateToken(user._id)
+
+  // Send HTTP-only Cookie
+  if(passwordIsCorrect) {
+    res.cookie("token", token, {
+      path: "/",
+      httpOnly: true,
+      expires: new Date(Date.now() + 1000 * 86400), // 1 day
+      sameSite: "none",
+      secure: true,
+    })
+  }
+
+  if(user && passwordIsCorrect) {
+    const { _id, name, email } = user
+    res.status(200).json({
+      _id,
+      name,
+      email,
+      token,
+    })
+  } else {
+    res.status(400);
+    throw new Error("Invalid email and password")
+  }
+
+
+});
+
 export {
-    registerUser,
+    registerUser, loginUser,
 }
