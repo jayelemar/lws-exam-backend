@@ -22,6 +22,12 @@ const userSchema = new mongoose.Schema({
     required: [true, "Pls add a password"],
     minLength:[6, "Password must be up to 6 characters"],
   },
+  likedAnimes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Anime",
+    }
+  ]
 }, {
 timestamps: true,
 })

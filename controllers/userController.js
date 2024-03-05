@@ -147,7 +147,74 @@ const loginStatus = asyncHandler(async ( req, res) => {
 });
 
 
+const getLikedAnimes = asyncHandler(async ( req, res) => {
+  try {
+    const user = await findById(req.user._id).populate("likedAnimes")
+    if(user) {
+      res.json(user.likedAnimes)
+    } else {
+      res.status(404)
+      throw new Error("User not found")
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
+});
+
+
+// Add anime to liked animes
+//  POST / api/users/favorites
+// access private
+const addLikedAnime = asyncHandler(async ( req, res) => {
+  const { animeId } = req.body
+  try {
+    const user = await User.findById(req.user._id)
+    if(user) {
+      if(user.likedAnimes.includes(animeId)) {
+        res.status(400)
+        throw new Error("Anime is already liked")
+      }
+
+      user.likedAnimes.push(animeId);
+      await user.save()
+      res.json(user.likedAnimes)
+    } else {
+      res.status(404)
+      throw new Error("Anime not found");
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  } 
+});
+
+// @desc delete all liked animes
+// @route DELETE / api/users/favorites
+// @access private
+const deleteLikedMovies = asyncHandler(async ( req, res) => {
+  try {
+    const user = await User.findById(req.user._id)
+    if(user) {
+      user.likedAnimes = []
+      await user.save();
+      res.json({ message: "All liked movies deleted successfully."})
+    } else {
+      res.status(404)
+      throw new Error("User not found.")
+    }
+  } catch (error) {
+      res.status(400).json({ message: error.message })
+  }
+});
+
+// ********** ADMIN CONTROLLER **********
+// @desc get all users
+// @route GET api/users 
+// @access Private/admin
+
+
+
 
 export {
-    registerUser, loginUser, logoutUser, getUser, loginStatus
+    registerUser, loginUser, logoutUser, getUser, loginStatus,
+    getLikedAnimes, addLikedAnime, deleteLikedMovies
 }
