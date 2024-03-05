@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 const protect = asyncHandler(async (req, res, next) => {
   try {
     const token = req.cookies.token;
-    console.log('Received token:', token);
+    // console.log('Received token:', token);
 
     if (!token) {
       res.status(401);
@@ -14,7 +14,8 @@ const protect = asyncHandler(async (req, res, next) => {
 
     // Verify Token
     const verified = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('Verified token:', verified);
+    // console.log('Verified token:', verified);
+    
     // Get user id from token
     const user = await User.findById(verified.id).select("-password");
 
