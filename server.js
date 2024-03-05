@@ -21,8 +21,8 @@ app.use(bodyParser.json());
 app.use(
     cors({
       origin: [
-        "localhost:5173", //vite
-        "localhost:3000", //nextjs
+        // "localhost:5173", //vite
+        "http://localhost:3000", //nextjs
         "https://your-frontend-website.com",
       ],
       credentials: true
