@@ -30,6 +30,8 @@ const protect = asyncHandler(async (req, res, next) => {
     throw new Error("Do not retrieve the JWT from the request cookies...");
   }
 });
+
+
 export {
-  protect
+  protect,
 };
