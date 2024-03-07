@@ -21,27 +21,12 @@ const getAnimes = asyncHandler(async ( req, res ) => {
       ...(category && { category}),
       ...(search && {name: { regex: search, $options: "i"} }),
     }
-
-    // load animes functionalities
-    const page = Number(req.query.pageNumber) || 1;
-    const limit = 3;  // 3 animes per page
-    const skip = (page -1) * limit
-
-    // find animes by query, skip and limit
-    const animes = await Animes.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
+    const animes = await Animes.find(query).sort({ createdAt: -1 });
     const count = await Animes.countDocuments(query)
     res.json({
       animes, 
-      page, 
-      pages: Math.ceil(count / limit),
       totalAnimes: count,
     })
-
-    
   } catch (error) {
     res.status(400).json({ message: error.message })
   }
