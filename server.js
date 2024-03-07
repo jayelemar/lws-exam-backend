@@ -3,10 +3,10 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import connectDB from './config/connectDB.js';
-import userRoute from './routes/userRoute.js';
 import { errorHandler } from './middlewares/errorMiddleware.js';
 import cookieParser from 'cookie-parser';
-
+import userRoute from './routes/userRoute.js';
+import animesRoute from './routes/animeRoute.js';
 
 dotenv.config();
 const app = express();
@@ -21,9 +21,9 @@ app.use(bodyParser.json());
 app.use(
     cors({
       origin: [
-        "localhost:5173", //vite
-        "localhost:3000", //nextjs
-        "https://your-frontend-website.com",
+        // "localhost:5173", //vite
+        "http://localhost:3000", //nextjs
+        "https://lws-exam.vercel.app",
       ],
       credentials: true
     })
@@ -39,6 +39,7 @@ app.use(errorHandler);
 
 //Routes
 app.use("/api/users", userRoute)
+app.use("/api/animes", animesRoute)
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
