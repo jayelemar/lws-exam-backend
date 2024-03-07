@@ -13,20 +13,11 @@ const animeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  tittleImage: {
-    type: String,
-    // required: true,
-  },
   categories: {
     type: [String],  // Array of strings
     required: true,
     enum: ['action', 'comedy', 'drama', 'fantasy', 'romance', 'school life', 'supernatural'],
   },
-  rate: {
-    type: Number,
-    required: true,
-    default: 0,
-  }
 },
 {
   timestamps: true,

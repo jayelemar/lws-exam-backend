@@ -16,10 +16,9 @@ const importAnimes = asyncHandler(async ( req, res ) => {
 
 const getAnimes = asyncHandler(async ( req, res ) => {
   try {
-    const { category, rate, search } = req.query;
+    const { category, search } = req.query;
     let query = {
       ...(category && { category}),
-      ...(rate && { rate}),
       ...(search && {name: { regex: search, $options: "i"} }),
     }
 
@@ -74,14 +73,12 @@ const getAnimeById = asyncHandler(async ( req, res ) => {
 
 const updateAnime = asyncHandler(async ( req, res ) => {
   try {
-    const { name, desc, categories, rate, titleImage } = req.body
+    const { name, desc, categories } = req.body
     const anime = await Animes.findById(req.params.id)
     if(anime) {
       anime.name = name || anime.name
       anime.desc = desc || anime.desc
       anime.categories = categories || anime.categories
-      anime.rate = rate || anime.rate
-      anime.titleImage = titleImage || anime.titleImage
 
       const updateAnime = await anime.save()
       res.status(201).json(updateAnime)
@@ -115,9 +112,9 @@ const deleteAnime = asyncHandler(async (req, res) => {
 // @access Private
 const createAnime = asyncHandler(async ( req, res ) => {
   try {
-    const { name, desc, categories, rate, titleImage } = req.body
+    const { name, desc, categories } = req.body
     const anime = new Animes({
-      name, desc, categories, rate, titleImage, userId: req.user._id
+      name, desc, categories, userId: req.user._id
     })
     if(anime) {
       const createAnime = await anime.save();
