@@ -23,7 +23,7 @@ app.use(
       origin: [
         // "localhost:5173", //vite
         "http://localhost:3000", //nextjs
-        "https://your-frontend-website.com",
+        "https://lws-exam.vercel.app",
       ],
       credentials: true
     })
